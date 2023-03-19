@@ -1,40 +1,52 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock } from '@fortawesome/free-solid-svg-icons';
-import PropTypes from 'prop-types';
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 
-// const [isActive, setIsActive] = useState(true);
 
-// function stopClick() {
-//     setIsActive(false);
-// }
+function SecondsCounter() {
+    const [isActive, setIsActive] = useState(true);
+    const [seconds, setSeconds] = useState(0);
   
+    function stopClick() {
+      setIsActive(false);
+    }
 
-
-function SecondsCounter(props){
+    function reset() {
+        setSeconds(0);
+        setIsActive(true);
+      }
+  
+    useEffect(() => {
+      let intervalId;
+      if (isActive) {
+        intervalId = setInterval(() => {
+          setSeconds((prevSeconds) => prevSeconds + 1);
+        }, 1000);
+      }
+      return () => clearInterval(intervalId);
+    }, [isActive]);
+  
+    const four = Math.floor(seconds / 1000);
+    const three = Math.floor((seconds % 1000) / 100);
+    const two = Math.floor((seconds % 100) / 10);
+    const one = seconds % 10;
+  
     return (
-    <>
+      <>
         <div className="bigCounter">
-            <div className="clock"><FontAwesomeIcon icon={faClock} />
-            </div>
-            <div className="seconds">{props.digitFour % 10}</div>
-            <div className="seconds">{props.digitThree % 10}</div>
-            <div className="seconds">{props.digitTwo % 10}</div>
-            <div className="seconds">{props.digitOne % 10}</div>
+          <div className="clock">
+            <FontAwesomeIcon icon={faClock} />
+          </div>
+          <div className="seconds">{four}</div>
+          <div className="seconds">{three}</div>
+          <div className="seconds">{two}</div>
+          <div className="seconds">{one}</div>
         </div>
-        {/* <button onClick={stopClick}>Stop</button> */}
-    </>
+        <button onClick={stopClick}>Stop</button>
+        <button onClick={reset}>Reset</button>
+      </>
     );
-}
+  }
 
-SecondsCounter.propTypes = {
-    digitFour:PropTypes.number,
-    digitThree:PropTypes.number,
-    digitTwo:PropTypes.number,
-    digitOne:PropTypes.number,
-};
-
-
-export default SecondsCounter;
+  export default SecondsCounter;
+  
